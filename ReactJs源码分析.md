@@ -1,4 +1,5 @@
-##未完待更新
+
+# 未完待更新
 
 ## 目录 _字母排序_
 * [CallbackQueue](#callbackqueue)
@@ -61,7 +62,7 @@ function instantiateReactComponent(node, shouldHaveDebugID) {
 ```
 
 #### TODO
-* `instantiateReactComponent` 调用关系 [ReactCompositeComponent](#ReactCompositeComponent)
+* `instantiateReactComponent` 调用关系 [ReactCompositeComponent](#reactcompositecomponent)
 
 ## <span id="reactCompositecomponent">ReactCompositeComponent _TODO_</span>
 >用于实例化组件、及完成组件元素的挂载、重绘组件 （extends React.Component 的用户自定义组件）
