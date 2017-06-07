@@ -28,7 +28,7 @@
 ```javascript
 // ReactDOMStackInjection  line 49 ：
 ReactEmptyComponent.injection.injectEmptyComponentFactory(function(instantiate){
-	return new ReactDOMEmptyComponent(instantiate);
+  return new ReactDOMEmptyComponent(instantiate);
 });
 ```
 
@@ -44,7 +44,7 @@ ReactHostComponent.injection.injectTextComponentClass(ReactDOMTextComponent);
 ```javascript
 //line 44 : 判断是否为内部组件
 function isInternalComponentType(type) {
-  // react 内部组件原型上都挂有 mountComponent 和  receiveComponent 方法
+  //react 内部组件原型上都挂有 mountComponent 和  receiveComponent 方法
   return (
     typeof type === 'function' &&
     typeof type.prototype !== 'undefined' &&
@@ -56,13 +56,13 @@ function isInternalComponentType(type) {
 ```javascript
 //line 62 :
 function instantiateReactComponent(node, shouldHaveDebugID) {
-    //初始化 react 组件 : 空组件、dom、文本、内部、自定义这几类组件
+  //初始化 react 组件 : 空组件、dom、文本、内部、自定义这几类组件
 }
 
 ```
 
 #### TODO
-* `instantiateReactComponent` 调用关系 [ReactCompositeComponent](#reactcompositecomponent)
+* `instantiateReactComponent` 调用关系[ReactMount._renderNewRootComponent](#reactmount) [ReactCompositeComponent](#reactcompositecomponent)
 
 ## <span id="reactCompositecomponent">ReactCompositeComponent _TODO_</span>
 >用于实例化组件、及完成组件元素的挂载、重绘组件 （extends React.Component 的用户自定义组件）
@@ -74,7 +74,15 @@ function instantiateReactComponent(node, shouldHaveDebugID) {
 
 #### 主要方法说明
 ```javascript
-//todo
+//Lazily allocates the refs object and stores `component` as `ref`.
+//line 1322 : 对外提供接口，用于向组件实例 ReactComponentInstance 添加 this.refs 属性
+attachRef: function(ref, component) {
+  var inst = this.getPublicInstance();
+  invariant(inst != null, 'Stateless function components cannot have refs.');
+  var publicComponentInstance = component.getPublicInstance();// 子组件的实例
+  var refs = inst.refs === emptyObject ? (inst.refs = {}) : inst.refs;
+  refs[ref] = publicComponentInstance;
+}
 ```
 
 
@@ -89,6 +97,8 @@ function instantiateReactComponent(node, shouldHaveDebugID) {
 #### 主要方法说明
 ```javascript
 //line 39:
+//ReactMount模块调用，用于挂载 react 组件 （组件的 render 方法）
+//ReactCompositeComponent模块中调用，用于挂载已实例化的用户自定义组件下的指定子组件  todo
 mountComponent: function(
   internalInstance,
   transaction,
@@ -116,7 +126,69 @@ mountComponent: function(
 }
 ```
 `transaction.getReactMountReady().enqueue` 参见 [ReactReconcileTransaction](#reactreconciletransaction)
+```javascript
+//line 131 : Update a component using a new element
+receiveComponent: function(
+  internalInstance,
+  nextElement,
+  transaction,
+  context,
+) {
+  var prevElement = internalInstance._currentElement;
 
+  if (nextElement === prevElement && context === internalInstance._context) {
+    //无需更新
+    return;
+  }
+
+  // 判断组件元素的refs属性是否需要更新
+  var refsChanged = ReactRef.shouldUpdateRefs(prevElement, nextElement);
+
+  if (refsChanged) {
+    //移除组件元素的refs属性
+    ReactRef.detachRefs(internalInstance, prevElement);
+  }
+
+  //更新组件，内部调用 render 方法重新生成待挂载的元素ReactElement
+  //当 internalInstance 为用户自定义组件时，其下包含的子节点也将更新
+  internalInstance.receiveComponent(nextElement, transaction, context);
+
+  if (
+    refsChanged &&
+    internalInstance._currentElement &&
+    internalInstance._currentElement.ref != null
+  ) {
+    // 更新refs属性
+    transaction.getReactMountReady().enqueue(attachRefs, internalInstance);
+  }
+},
+```
+<span id="code_performupdateifnecessary"></span>
+```javascript
+//line 193 : Flush any dirty changes in a component.
+performUpdateIfNecessary: function(
+  internalInstance,
+  transaction,
+  updateBatchNumber,
+) {
+  //internalInstance._updateBatchNumber 把组件添加到脏组件时+1，重绘
+  //updateBatchNumber 当 ReactUpdates.flushBatchedUpdates方法执行时+1
+  //当组件被添加到脏组件的时候，须重绘组件，由 ReactUpdates.enqueueUpdate 方法完成
+  if (internalInstance._updateBatchNumber !== updateBatchNumber) {
+    // The component's enqueued batch number should always be the current
+    // batch or the following one.
+    return;
+  }
+
+  //internalInstance 包含 _pendingElement、_pendingStateQueue、_pendingForceUpdate 用以判断更新方式
+  //_pendingStateQueue为state数据变化引起，由this.setState方法发起
+  //_pendingForceUpdate 为调用this.forceUpdate方法发起
+
+  //子组件递归调用ReactReconciler.receiveComponent方法
+  internalInstance.performUpdateIfNecessary(transaction);
+}
+```
+[ReactUpdates.runBatchedUpdates](#code_runbatchedupdates) 调用
 
 
 
@@ -159,24 +231,23 @@ ReactElement.createElement = function(){
 //ReactCurrentOwner.current 则由 _renderValidatedComponent 设置（组件挂载和更新的时候执行）
 //ReactCompositeComponent line 1294 :
 _renderValidatedComponent: function() {
-    if (
-      __DEV__ ||
-      this._compositeType !== ReactCompositeComponentTypes.StatelessFunctional
-    ) {
-      ReactCurrentOwner.current = this;
-
+  if (
+    __DEV__ ||
+    this._compositeType !== ReactCompositeComponentTypes.StatelessFunctional
+  ) {
+    ReactCurrentOwner.current = this;
 }
 ```
 ```javascript
 function attachRef(ref, component, owner) {
-	if (typeof ref === 'function') {
-    //由用户自定义组件owner调用ReactReconciler中方法执行，this指向owner //todo ??
-    ref(component.getPublicInstance());
-	} else {
-    	//最终是调用 ReactCompositeComponent.attachRef，向用户自定义组件实例添加this.refs[ref]属性
-    	//参见 ReactOwner 分析
-    	ReactOwner.addComponentAsRefTo(component, ref, owner);
-  	}
+  if (typeof ref === 'function') {
+  //由用户自定义组件owner调用ReactReconciler中方法执行，this指向owner //todo ??
+  ref(component.getPublicInstance());
+  } else {
+  	//最终是调用 ReactCompositeComponent.attachRef，向用户自定义组件实例添加this.refs[ref]属性
+  	//参见 ReactOwner 分析
+  	ReactOwner.addComponentAsRefTo(component, ref, owner);
+  }
 }
 ```
 see [ReactOwner](#reactowner)
@@ -217,20 +288,20 @@ function isValidOwner(object: any): boolean {
 ```javascript
 //line 74 :
 addComponentAsRefTo: function(
-    component: ReactInstance,
-    ref: string,
-    owner: ReactInstance | Fiber,
-  ): void {
-    //如果有 tag 标记是用户自定义组件 
-    //ReactFiberBeginWork.js #556
-    //mountIndeterminateComponent(...){... workInProgress.tag = ClassComponent;...}
-    if (owner && (owner: any).tag === ClassComponent) {    	
-    	refs[ref] = component.getPublicInstance(); //todo 如何理解？？
-    } else {
- 		//向用户自定义组件的实例添加refs
-      	(owner: any).attachRef(ref, component); // 调用 ReactCompositeComponent.attachRef
-    }
- }
+  component: ReactInstance,
+  ref: string,
+  owner: ReactInstance | Fiber,
+): void {
+  //如果有 tag 标记是用户自定义组件
+  //ReactFiberBeginWork.js #556
+  //mountIndeterminateComponent(...){... workInProgress.tag = ClassComponent;...}
+  if (owner && (owner: any).tag === ClassComponent) {
+  	refs[ref] = component.getPublicInstance(); //todo 如何理解？？
+  } else {
+		//向用户自定义组件的实例添加refs
+    	(owner: any).attachRef(ref, component); // 调用 ReactCompositeComponent.attachRef
+  }
+}
 ```
 ```javascript
 //line 104 :
@@ -408,10 +479,10 @@ Foo.release(foo); //释放实例，将实例放回池中,执行destructor foo.ba
 ```javascript
 //line 49 :
 enqueue(callback: () => void, context: T) {
-	this._callbacks = this._callbacks || [];
-	this._callbacks.push(callback);
-	this._contexts = this._contexts || [];
-	this._contexts.push(context);
+  this._callbacks = this._callbacks || [];
+  this._callbacks.push(callback);
+  this._contexts = this._contexts || [];
+  this._contexts.push(context);
 }
 
 notifyAll() {
@@ -440,12 +511,12 @@ module.exports = PooledClass.addPoolingTo(CallbackQueue);
 //示例 :
 var queue = CallbackQueue.getPooled();
 var foo = {
-    bar: 0
+  bar: 0
 }
 var plusBar = function() {
-    if (typeof(this.bar) !== "undefined") {
-        this.bar++;
-    }
+  if (typeof(this.bar) !== "undefined") {
+    this.bar++;
+  }
 }
 queue.enqueue(plusBar, foo);
 queue.enqueue(plusBar, foo);
@@ -553,6 +624,7 @@ function runBatchedUpdates(transaction) {
   }
 }
 ```
+see [ReactReconciler.performUpdateIfNecessary](#code_performupdateifnecessary)
 
 <span id="code_flushbatchedupdates"></span>
 ```javascript
@@ -578,7 +650,7 @@ see [runbatchedupdates](#code_runbatchedupdates)
 #### 主要方法说明
 ```javascript
 //line 19 :
-// 初始化 ReactDefaultBatchingStrategyTransaction ，预置 Transaction 包装方法 
+//初始化 ReactDefaultBatchingStrategyTransaction ，预置 Transaction 包装方法
 
 var RESET_BATCHED_UPDATES = {
   initialize: emptyFunction,
@@ -621,12 +693,4 @@ var ReactDefaultBatchingStrategy = {
     }
   },
 };
-``` 
-
-
-
-## <span id="xx"></span>
-
-#### 依赖
-*	
-#### 主要方法说明
+```
