@@ -179,7 +179,7 @@ function attachRef(ref, component, owner) {
   	}
 }
 ```
-see [ReactOwner](#ReactOwner)
+see [ReactOwner](#reactowner)
 
 
 ## <span id="reactowner">ReactOwner</span>
