@@ -2,7 +2,7 @@
 > react js 源码分析 和 reactNative Android 源码分析
 
 ### 自动生成 markdown 文档使用说明
->默认在 out 文件夹生成 React.md
+>默认在 build 文件夹生成 React.md
 ```shell
 node script
 ```
