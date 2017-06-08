@@ -1,0 +1,7 @@
+{
+  "name": "md-build",
+  "scripts": {
+      "build": "node script/index.js"
+    },
+  "version": "0.1.18"
+}
