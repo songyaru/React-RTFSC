@@ -41,35 +41,23 @@ var parseFileDependency = function (str, dependency, fileName) {
   var ret = dependency;
   str.replace(/(\*\s+)*\[([^\]]+)(?:\]\(\#([^\)]+)\))/g, function () {
     var args = arguments;
-    var isRootDependency = (args[1] !== undefined);
+    // var isRootDependency = (args[1] !== undefined);
     var name = args[2];
-    var link = args[3];
+    // var link = args[3];
 
-
-    var needCheckRecycleDependency = false;
-    if (isRootDependency) {
-      if (name.toLowerCase() == link.toLowerCase()) {
-        needCheckRecycleDependency = true;
-      }
-    } else {
-      var nsArray = name.split(".");
-      if (nsArray.length > 1) {
-        name = name.split(".")[0];
-        needCheckRecycleDependency = true;
-      }
+    var nsArray = name.split(".");//正文中 [React.func](#code_func) 形式的代码锚点
+    if (nsArray.length > 1) {
+      name = name.split(".")[0];
     }
 
-    if (needCheckRecycleDependency) {
-      if (!isRecycleDependency(fileName, name, dependency)) {
-        ret[fileName].push(name);
-        if (isFileExists(name)) {
-          ret = getDependency(name, ret);
-        } else {
-          ret.error[name] = true;
-        }
+    if (!isRecycleDependency(fileName, name, dependency)) {
+      ret[fileName].push(name);
+      if (isFileExists(name)) {
+        ret = getDependency(name, ret);
+      } else {
+        ret.error[name] = true;
       }
     }
-
   });
   return ret;
 };

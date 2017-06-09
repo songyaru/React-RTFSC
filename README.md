@@ -3,6 +3,7 @@
 
 ### 自动生成 markdown 文档使用说明
 >默认在 build 文件夹生成 React.md
+
 ```shell
 node script
 ```
@@ -14,9 +15,9 @@ npm run build
 >如需要生成特定文件的 markdown ，如 ReactComponet.md 执行：
 
 ```shell
-npm run build ReactComponet 
+node script ReactComponet
 ```
 或者 :
 ```shell
-node script ReactComponet
+npm run build ReactComponet
 ```
