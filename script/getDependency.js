@@ -11,14 +11,13 @@ var isFileExists = require("./isFileExists");
 
 var getDependency = function (fileName, dependency) {
   var source = "";
-  var ret = dependency || {};
+  var ret = dependency || {"error": {}};
   try {
     if (!ret[fileName] || !ret.error[fileName]) { //不存在或者已经扫描过的文件不再扫描
       ret[fileName] = [];
       var filePath = getPath(fileName);
       if (isFileExists(fileName)) {
         source = fs.readFileSync(filePath, "UTF-8");
-        // console.log("", "   -source- ", source);
         ret = parseFileDependency(source, ret, fileName)
       } else {
         //文件不存在
@@ -33,20 +32,44 @@ var getDependency = function (fileName, dependency) {
 };
 
 
-var parseFileDependency = function (str, dependency, key) {
+var isRecycleDependency = function (fileName, name, dependency) {
+  // 自己依赖自己 || 已经存在依赖表里 || 存在错误的依赖表里
+  return dependency[fileName].includes(name) || dependency[name] != undefined || dependency.error[name]
+};
+
+var parseFileDependency = function (str, dependency, fileName) {
   var ret = dependency;
-  str.replace(/(?:\*\s+\[)([^\]]+)(?:\]\(\#([^\)]+)\))/g, function () {
+  str.replace(/(\*\s+)*\[([^\]]+)(?:\]\(\#([^\)]+)\))/g, function () {
     var args = arguments;
-    var name = args[1];
-    var link = args[2];
-    if (name.toLowerCase() == link.toLowerCase()) {
-      ret[key].push(name);
-      if (isFileExists(name)) {
-        ret = getDependency(name, ret);
-      } else {
-        ret.error[name] = true;
+    var isRootDependency = (args[1] !== undefined);
+    var name = args[2];
+    var link = args[3];
+
+
+    var needCheckRecycleDependency = false;
+    if (isRootDependency) {
+      if (name.toLowerCase() == link.toLowerCase()) {
+        needCheckRecycleDependency = true;
+      }
+    } else {
+      var nsArray = name.split(".");
+      if (nsArray.length > 1) {
+        name = name.split(".")[0];
+        needCheckRecycleDependency = true;
       }
     }
+
+    if (needCheckRecycleDependency) {
+      if (!isRecycleDependency(fileName, name, dependency)) {
+        ret[fileName].push(name);
+        if (isFileExists(name)) {
+          ret = getDependency(name, ret);
+        } else {
+          ret.error[name] = true;
+        }
+      }
+    }
+
   });
   return ret;
 };

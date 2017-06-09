@@ -4,6 +4,7 @@
 * [ReactBaseClasses](#reactbaseclasses)
 * [ReactChildren](#reactchildren)
 * [ReactElement](#reactelement)
+* [instantiateReactComponent](#instantiatereactcomponent)
 
 #### 主要方法说明
 ```javascript
