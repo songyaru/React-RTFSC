@@ -10,8 +10,7 @@ var fs = require("fs");
 var getDependency = require("./getDependency");
 var combineFile = require("./combineFile");
 var genCatalog = require("./genCatalog");
-var mkDir = require("./mkdir");
-
+var writeFile = require("./writeFile");
 var dependency = getDependency(name, {"error": {}});
 // console.log("", "   -dependency- ", dependency);
 var content = combineFile(name, dependency);
@@ -19,8 +18,5 @@ var content = combineFile(name, dependency);
 var catalog = genCatalog(name, dependency);
 
 
-var outDir = "./build/";
-mkDir(outDir);
-var destFile = outDir + name + ".md";
-fs.writeFileSync(destFile, catalog + "\n" + content);
+writeFile(catalog + "\n" + content, "./build/" + name + ".md");
 
