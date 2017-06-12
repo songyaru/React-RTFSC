@@ -32,7 +32,11 @@ var getDependency = function (fileName, dependency) {
 };
 
 
-var isRecycleDependency = function (fileName, name, dependency) {
+var isRecycleDependency = function (fileName, name, dependency, _isRootDependency) {
+  if (_isRootDependency) {
+    //在文档开头标明的依赖全部都需要显示出来
+    // return dependency[fileName].includes(name);//todo 是否需要？
+  }
   // 自己依赖自己 || 已经存在依赖表里 || 存在错误的依赖表里
   return dependency[fileName].includes(name) || dependency[name] != undefined || dependency.error[name]
 };
@@ -41,7 +45,7 @@ var parseFileDependency = function (str, dependency, fileName) {
   var ret = dependency;
   str.replace(/(\*\s+)*\[([^\]]+)(?:\]\(\#([^\)]+)\))/g, function () {
     var args = arguments;
-    // var isRootDependency = (args[1] !== undefined);
+    var isRootDependency = (args[1] !== undefined);
     var name = args[2];
     // var link = args[3];
 
@@ -50,7 +54,7 @@ var parseFileDependency = function (str, dependency, fileName) {
       name = name.split(".")[0];
     }
 
-    if (!isRecycleDependency(fileName, name, dependency)) {
+    if (!isRecycleDependency(fileName, name, dependency, isRootDependency)) {
       ret[fileName].push(name);
       if (isFileExists(name)) {
         ret = getDependency(name, ret);

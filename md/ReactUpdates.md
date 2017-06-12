@@ -43,7 +43,7 @@ var ReactUpdatesInjection = {
     batchingStrategy = _batchingStrategy;
   },
 };
-//由 ReactDOMStackInjection line 55 调用
+//由 ReactDOMInjection line 55 调用
 ReactUpdates.injection.injectReconcileTransaction(ReactReconcileTransaction);
 ReactUpdates.injection.injectBatchingStrategy(ReactDefaultBatchingStrategy);
 ```

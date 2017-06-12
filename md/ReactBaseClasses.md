@@ -18,6 +18,7 @@ ReactComponent.prototype.forceUpdate = function(callback) {
 
 
 //ReactPureComponent 和 ReactComponent 类似，多一个标识
+//ReactCompositeComponent 模块中用于区别组件,当组件继承的是 ReactPureComponent ，使用 shallowCompare 浅比较组件是否需要重绘
 ReactPureComponent.prototype.isPureReactComponent = true;
 ```
 
