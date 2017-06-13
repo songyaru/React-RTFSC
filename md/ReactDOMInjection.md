@@ -1,5 +1,6 @@
 ## <span id="reactdominjection">ReactDOMInjection</span>
 > ReactDom inject 方法的入口
+
 #### 依赖
 * [ARIADOMPropertyConfig](#ariadompropertyconfig)
 * [BeforeInputEventPlugin](#beforeinputeventplugin)

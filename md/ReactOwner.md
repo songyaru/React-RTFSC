@@ -1,5 +1,5 @@
 ## <span id="reactowner">ReactOwner</span>
-用于调用ReactCompositeComponent实例的attachRef、detachRef方法，向用户自定义组件的实例添加或移除refs。被ReactRef调用。
+>用于调用ReactCompositeComponent实例的attachRef、detachRef方法，向用户自定义组件的实例添加或移除refs。被ReactRef调用。
 
 #### 依赖
 * ReactTypeOfWork

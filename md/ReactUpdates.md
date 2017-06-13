@@ -1,5 +1,6 @@
 ## <span id="reactupdates">ReactUpdates</span>
 > 约定组件重绘过程的 Transaction 包装方法
+
 #### 依赖
 * [PooledClass](#pooledclass)
 * [Transaction](#transaction)

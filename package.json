@@ -1,7 +1,10 @@
 {
   "name": "md-build",
   "scripts": {
-      "build": "node script"
-    },
-  "version": "0.0.1"
+    "build": "node script"
+  },
+  "version": "0.0.1",
+  "dependencies": {
+    "showdown": "^1.7.1"
+  }
 }

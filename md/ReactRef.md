@@ -1,5 +1,6 @@
 ## <span id="reactref">ReactRef</span>
-用于向顶层用户自定义组件实例添加或移除refs、或比较refs是否需要更新。通过ReactRonconcile模块间接被ReactCompositeComponent模块调用。
+>用于向顶层用户自定义组件实例添加或移除refs、或比较refs是否需要更新。通过ReactRonconcile模块间接被ReactCompositeComponent模块调用。
+
 #### 依赖
 * [ReactOwner](#reactowner)
 创建、销毁、比对reactElement的refs属性相关

@@ -1,5 +1,6 @@
 ## <span id="transaction">Transaction</span>
 > 类似 aop 包装一个方法，在方法执行的时候先执行 initializeAll,再执行方法，最后执行 closeAll
+
 #### 主要方法说明
 ```javascript
   /*

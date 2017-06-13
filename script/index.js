@@ -18,8 +18,13 @@ var content = combineFile(name, dependency);//拼接文件
 
 var catalog = genCatalog(name, dependency);//生成目录信息
 
+var sourceString = catalog + "\n" + content;
 
-writeFile(catalog + "\n" + content, "./build/" + name + ".md");//输出文件
+var writeHtmlFile = require("./writeHtmlFile");
+//先生成 html,防止没有 build 目录生成子目录报错
+writeHtmlFile(sourceString, name, "./build/" + name + ".html");
 
-// writeFile(JSON.stringify(dependency), "./build/dependency.json");
+writeFile(sourceString, "./build/md/" + name + ".md");//生成 MD 文件
+writeFile(JSON.stringify(dependency), "./build/dependency/" + name + ".json");//生成依赖表
+
 

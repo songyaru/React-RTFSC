@@ -1,5 +1,6 @@
 ## <span id="flattenchildren">flattenChildren</span>
 >将 props.children 子节点根据 key 值扁平化后输出。
+
 #### 依赖
 * [traverseAllChildren](#traverseallchildren)
 

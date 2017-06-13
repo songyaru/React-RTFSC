@@ -1,5 +1,6 @@
 ## <span id="pooledclass">PooledClass</span>
 > 提供实例池，管理函数实例的生成和销毁
+
 #### 主要方法说明
 ```javascript
 //line 26 :

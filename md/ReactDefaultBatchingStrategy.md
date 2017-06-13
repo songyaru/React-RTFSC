@@ -1,5 +1,6 @@
 ## <span id="reactdefaultbatchingstrategy">ReactDefaultBatchingStrategy</span>
 >暴露 [ReactDefaultBatchingStrategy.batchedUpdates](#code_reactdefaultbatchingstrategy) 方法,该方法中的 Transaction 包装方法为：RESET_BATCHED_UPDATES、FLUSH_BATCHED_UPDATES
+
 #### 主要方法说明
 ```javascript
 //line 19 :

@@ -1,7 +1,6 @@
 ## <span id="traverseallchildren">traverseAllChildren</span>
 >用于遍历 ReactNode 的 props.children 或 props 属性
 
-
 #### 主要方法说明
 ```javascript
 //line 48 :
@@ -22,7 +21,7 @@ function getComponentKey(component, index) {
 }
 ```
 ```javascript
-\\line 71 :
+//line 71 :
 function traverseAllChildrenImpl(
   children,
   nameSoFar,

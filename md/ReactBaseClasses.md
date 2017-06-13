@@ -1,5 +1,6 @@
 ## <span id="reactbaseclasses">ReactBaseClasses</span>
 >暴露 Component 和 PureComponent
+
 #### 主要方法说明
 ```javascript
 //line 24 :

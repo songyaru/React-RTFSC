@@ -1,19 +1,26 @@
 var str ="\
-var ReactDOMFrameScheduling = require('ReactDOMFrameScheduling');\
-var ReactDOMInjection = require('ReactDOMInjection');\
-var ReactGenericBatching = require('ReactGenericBatching');\
-var ReactFiberReconciler = require('ReactFiberReconciler');\
-var ReactInputSelection = require('ReactInputSelection');\
-var ReactInstanceMap = require('ReactInstanceMap');\
-var ReactPortal = require('ReactPortal');\
-var ReactVersion = require('ReactVersion');\
-var {isValidElement} = require('react');\
-var {injectInternals} = require('ReactFiberDevToolsHook');\
+var {\n\
+  findCurrentUnmaskedContext,\n\
+  isContextProvider,\n\
+  processChildContext,\n\
+} = require('ReactFiberContext');\n\
+var {createFiberRoot} = require('ReactFiberRoot');\n\
+var ReactFiberScheduler = require('ReactFiberScheduler');\n\
+var {HostComponent} = require('ReactTypeOfWork');\n\
+var {findCurrentHostFiber} = require('ReactFiberTreeReflection');\n\
+var getContextForSubtree = require('getContextForSubtree');\n\
 ";
-var s = str.replace(/var\s([^\s]+)\s+\=[^;]+;/g, function () {
+// var s = str.replace(/var\s([^\s]+)\s+\=[^;]+;/g, function () {
+//   var args = arguments;
+//   var v = args[1];
+//   return "* [" + v + "](#" + v.toLowerCase() + ")\n";
+// });
+
+var s = str.replace(/var\s(?:[^\s]+)\s+\=\s+require\('(\w+)'\);/g, function () {
   var args = arguments;
   var v = args[1];
   return "* [" + v + "](#" + v.toLowerCase() + ")\n";
 });
+
 
 console.log(s);
