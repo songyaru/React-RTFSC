@@ -2,18 +2,21 @@
 > react js 源码分析 和 reactNative Android 源码分析
 
 ### 自动生成 markdown 和 html 文档使用说明
-首先执行`npm install` 安装需要的依赖包
+在 build/md/ 目录下生成 markdown 文档
+```shell
+node script [文件名] #文件名默认为 React
+```
 
->默认在 build 文件夹生成 React.html
+
+同时生成 HTML 和 markdown 文档
 
 ```shell
-npm run build 
-```
->如需要生成特定文件的文档， 如 ReactDOMFiber.html 则执行：
+npm install #安装需要的依赖包
 
-```shell
-npm run build ReactDOMFiber
+npm run html [文件名]
+#如需要 ReactDOMFiber 的文档 则执行：npm run html ReactDOMFiber
 ```
+
 
 ### react-js 编译脚本简单分析
 从 `pacakage.json`中发现代码合并入口在 build.js 中

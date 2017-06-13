@@ -1,7 +1,8 @@
 {
   "name": "md-build",
   "scripts": {
-    "build": "node script"
+    "html": "node script -html",
+    "md": "node script "
   },
   "version": "0.0.1",
   "dependencies": {
