@@ -1,6 +1,9 @@
 ## <span id="reactbaseclasses">ReactBaseClasses</span>
 >暴露 Component 和 PureComponent
 
+#### 依赖
+* [ReactNoopUpdateQueue](#reactnoopupdatequeue)
+
 #### 主要方法说明
 ```javascript
 //line 24 :

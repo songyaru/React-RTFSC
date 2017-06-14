@@ -101,6 +101,12 @@ const bundles = [
 
 源码的分析就从这两个文件入手，执行 `node script` 和 `node script ReactDOMFiber` 生成这两个文件的 markdown 文档。
 
+补充：减少 development 开发环境生成代码中 `__DEV__` 部分的干扰，build 手动去除掉
+```javascript
+//scripts/error-codes/dev-expression-with-codes.js line 62 :
+//path.replaceWith(DEV_EXPRESSION); 替换成 :
+path.replaceWithSourceString("false");
+```
 ### 利用 chrome 调试源码
 创建一个 html，引入 build 目录下生成的源码打包文件
 ```html
