@@ -31,6 +31,7 @@ see [ReactDOMInjection](#reactdominjection),
 [findDOMNode](#finddomnode)
 
 ```javascript
+// DOMRenderer 初始化
 var DOMRenderer = ReactFiberReconciler({
   //返回 DOMNamespaces
   getRootHostContext(rootContainerInstance: Container): HostContext {
@@ -139,7 +140,7 @@ var DOMRenderer = ReactFiberReconciler({
 
 });
 
-
+//ReactGenericBatching : function fiberBatchedUpdates = DOMRenderer.batchedUpdates;
 ReactGenericBatching.injection.injectFiberBatchedUpdates(
   DOMRenderer.batchedUpdates,
 );
@@ -163,14 +164,20 @@ function renderSubtreeIntoContainer(
     // First clear any existing content.
     // TODO: Figure out the best heuristic here.
     if (!shouldReuseContent(container)) {
+      // 清空 container 下的子节点
       while (container.lastChild) {
         container.removeChild(container.lastChild);
       }
     }
+    // ReactFiberReconciler.createContainer -> ReactFiberRoot.createFiberRoot ->
+    // ReactFiber.createHostRootFiber -> ReactFiber.createfiber(HostRoot, null, NoContext)
     const newRoot = DOMRenderer.createContainer(container);
     root = container._reactRootContainer = newRoot;
     // Initial mount should not be batched.
+    // ReactFiberReconciler.unbatchedUpdates -> ReactFiberScheduler.unbatchedUpdates
+    // -> return DOMRenderer.updateContainer(children, newRoot, parentComponent, callback);
     DOMRenderer.unbatchedUpdates(() => {
+      // ReactFiberReconciler.updateContainer
       DOMRenderer.updateContainer(children, newRoot, parentComponent, callback);
     });
   } else {
@@ -179,6 +186,10 @@ function renderSubtreeIntoContainer(
   return DOMRenderer.getPublicRootInstance(root);
 }
 ```
+see [ReactFiberRoot.createFiberRoot](#code_reactfiber_createfiber),
+[ReactFiberScheduler.unbatchedUpdates](#code_reactfiberscheduler_unbatchedupdates)
+[ReactFiberReconciler.updateContainer](#code_reactfiberreconciler_updatecontainer)
+
 ```javascript
 //暴露接口
 var ReactDOM = {
