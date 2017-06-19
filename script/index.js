@@ -5,11 +5,11 @@
  *
  */
 var args = process.argv.splice(2);
-var name = args[0] || "React";
+var name = args[0] || "ReactEntry";
 var withHTML = false;
 if (name == "-html") {
   withHTML = true;
-  name = args[1] || "React"
+  name = args[1] || "ReactEntry"
 }
 
 var fs = require("fs");
@@ -26,13 +26,13 @@ var dependency = getDependency(name);//扫描文件获取依赖目录
 
 var content = combineFile(name, dependency);//拼接文件
 
-var catalog = genCatalog(name, dependency);//生成目录信息
+var summary = genCatalog(name, dependency);//生成目录信息
 
-var sourceString = catalog + "\n" + content;
+var sourceString = summary + "\n" + content;
 
 if (withHTML) {
   var writeHtmlFile = require("./writeHtmlFile");
-  writeHtmlFile(sourceString, name, "./build/" + name + ".html");//生成 html
+  writeHtmlFile(content, name, "./build/" + name + ".html", summary);//生成 html
 }
 
 writeFile(sourceString, "./build/md/" + name + ".md");//生成 MD 文件

@@ -36,7 +36,7 @@ function restoreStateOfTarget(target) {
 
 ```javascript
 var ReactControlledComponent = {
-  //ReactDOMFiber line 61 : ReactDOMFiberComponent
+  //ReactDOMFiberEntry line 61 : ReactDOMFiberComponent
   injection: ReactControlledComponentInjection,
 
   enqueueStateRestore(target) {

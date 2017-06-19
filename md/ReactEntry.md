@@ -1,4 +1,4 @@
-## <span id="react">React</span>
+## <span id="reactentry">React</span>
 > React 暴露的接口
 
 #### 依赖

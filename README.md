@@ -1,5 +1,5 @@
-# 未完待续
-> react js 源码分析 和 reactNative Android 源码分析
+# react 源码分析 --未完待续
+> react js 源码分析 v16.0.0-alpha.13
 
 ### 自动生成 markdown 和 html 文档使用说明
 在 build/md/ 目录下生成 markdown 文档
@@ -14,7 +14,7 @@ node script [文件名] #文件名默认为 React
 npm install #安装需要的依赖包
 
 npm run html [文件名]
-#如需要 ReactDOMFiber 的文档 则执行：npm run html ReactDOMFiber
+#如需要 ReactDOMFiberEntry 的文档 则执行：npm run html ReactDOMFiberEntry
 ```
 
 
@@ -57,7 +57,7 @@ const bundles = [
       moduleName: 'React',
       sourceMap: false,
     },
-    entry: 'src/isomorphic/React.js',
+    entry: 'src/isomorphic/ReactEntry.js',
     externals: [
       'create-react-class/factory',
       'prop-types',
@@ -84,7 +84,7 @@ const bundles = [
       moduleName: 'ReactDOM',
       sourceMap: false,
     },
-    entry: 'src/renderers/dom/fiber/ReactDOMFiber.js',
+    entry: 'src/renderers/dom/fiber/ReactDOMFiberEntry.js',
     externals: ['prop-types', 'prop-types/checkPropTypes'],
     fbEntry: 'src/fb/ReactDOMFiberFBEntry.js',
     paths: [
@@ -97,9 +97,9 @@ const bundles = [
   }
 }
 ```
-发现 `React` 和 `ReactDOM` 的打包入口 js 分别是 `src/isomorphic/React.js` 和 `src/renderers/dom/fiber/ReactDOMFiber.js`
+发现 `React` 和 `ReactDOM` 的打包入口 js 分别是 `src/isomorphic/ReactEntry.js` 和 `src/renderers/dom/fiber/ReactDOMFiberEntry.js`
 
-源码的分析就从这两个文件入手，执行 `node script` 和 `node script ReactDOMFiber` 生成这两个文件的 markdown 文档。
+源码的分析就从这两个文件入手，执行 `node script` 和 `node script ReactDOMFiberEntry` 生成这两个文件的 markdown 文档。
 
 补充：减少 development 开发环境生成代码中 `__DEV__` 部分的干扰，build 手动去除掉
 ```javascript

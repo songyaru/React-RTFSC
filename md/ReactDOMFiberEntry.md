@@ -1,4 +1,4 @@
-## <span id="reactdomfiber">ReactDOMFiber</span>
+## <span id="reactdomfiberentry">ReactDOMFiberEntry</span>
 > ReactDom 暴露的接口
 
 #### 依赖
@@ -172,7 +172,7 @@ function renderSubtreeIntoContainer(
     // ReactFiberReconciler.createContainer -> ReactFiberRoot.createFiberRoot ->
     // ReactFiber.createHostRootFiber -> ReactFiber.createfiber(HostRoot, null, NoContext)
     const newRoot = DOMRenderer.createContainer(container);
-    root = container._reactRootContainer = newRoot;
+    root = container._reactRootContainer = newRoot;//container._reactRootContainer 保存
     // Initial mount should not be batched.
     // ReactFiberReconciler.unbatchedUpdates -> ReactFiberScheduler.unbatchedUpdates
     // -> return DOMRenderer.updateContainer(children, newRoot, parentComponent, callback);
@@ -187,8 +187,32 @@ function renderSubtreeIntoContainer(
 }
 ```
 see [ReactFiberRoot.createFiberRoot](#code_reactfiber_createfiber),
-[ReactFiberScheduler.unbatchedUpdates](#code_reactfiberscheduler_unbatchedupdates)
+[ReactDOMFiberEntry.shouldReuseContent](#code_reactdomfiberentry_shouldreusecontent),
+[ReactFiberScheduler.unbatchedUpdates](#code_reactfiberscheduler_unbatchedupdates),
 [ReactFiberReconciler.updateContainer](#code_reactfiberreconciler_updatecontainer)
+
+<span id="code_reactdomfiberentry_shouldreusecontent"></span>
+```javascript
+//是否可以重用
+function shouldReuseContent(container) {
+  const rootElement = getReactRootElementInContainer(container);
+  return !!(rootElement &&
+    rootElement.nodeType === ELEMENT_NODE &&
+    rootElement.getAttribute(ID_ATTRIBUTE_NAME));// "data-reactid"
+}
+
+function getReactRootElementInContainer(container) {
+  if (!container) {
+    return null;
+  }
+
+  if (container.nodeType === DOCUMENT_NODE) {
+    return container.documentElement;
+  } else {
+    return container.firstChild;
+  }
+}
+```
 
 ```javascript
 //暴露接口

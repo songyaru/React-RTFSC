@@ -31,26 +31,8 @@ module.exports = function<T, P, I, TI, PI, C, CX, PL>(
     deferredUpdates,
   } = ReactFiberScheduler(config);
 
-  function scheduleTopLevelUpdate(
-    current: Fiber,
-    element: ReactNodeList,
-    callback: ?Function,
-  ) {
-
-    // Check if the top-level element is an async wrapper component. If so, treat
-    // updates to the root as async. This is a bit weird but lets us avoid a separate
-    // `renderAsync` API.
-    const forceAsync =
-      ReactFeatureFlags.enableAsyncSubtreeAPI &&
-      element != null &&
-      element.type != null &&
-      (element.type: any).unstable_asyncUpdates === true;
-    const priorityLevel = getPriorityContext(current, forceAsync);
-    const nextState = {element};
-    callback = callback === undefined ? null : callback;
-
-    addTopLevelUpdate(current, nextState, callback, priorityLevel);
-    scheduleUpdate(current, priorityLevel);
+  function scheduleTopLevelUpdate() {
+    //...
   }
 
   return {
@@ -134,7 +116,12 @@ updateContainer(
 
   scheduleTopLevelUpdate(current, element, callback);
 }
+```
+see [getContextForSubtree](#getcontextforsubtree),
+[ReactFiberReconciler.scheduleTopLevelUpdate](#code_reactfiberreconciler_scheduletoplevelupdate),
 
+<span id="code_reactfiberreconciler_scheduletoplevelupdate"></span>
+```javascript
 function scheduleTopLevelUpdate(
   current: Fiber,
   element: ReactNodeList,
@@ -148,13 +135,15 @@ function scheduleTopLevelUpdate(
     element != null &&
     element.type != null &&
     (element.type: any).unstable_asyncUpdates === true;
-  const priorityLevel = getPriorityContext(current, forceAsync);
+  const priorityLevel = getPriorityContext(current, forceAsync);// ReactFiberScheduler.getPriorityContext
   const nextState = {element};
   callback = callback === undefined ? null : callback;
 
   //TODO
-  addTopLevelUpdate(current, nextState, callback, priorityLevel);
-  scheduleUpdate(current, priorityLevel);
+  addTopLevelUpdate(current, nextState, callback, priorityLevel);// ReactFiberUpdateQueue.addTopLevelUpdate
+  scheduleUpdate(current, priorityLevel);// ReactFiberScheduler.scheduleUpdate
 }
 ```
-see [getContextForSubtree](#getContextForSubtree)
+see [ReactFiberScheduler.getPriorityContext](#reactfiberscheduler),
+[ReactFiberUpdateQueue.addTopLevelUpdate](#code_reactfiberupdatequeue_addtoplevelupdate),
+[ReactFiberScheduler.scheduleUpdate](#code_reactfiberscheduler_scheduleupdate),

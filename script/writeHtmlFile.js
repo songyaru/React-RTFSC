@@ -4,6 +4,7 @@ var showdown = require('showdown');
 var converter = new showdown.Converter();
 
 //TODO 优化 css 格式
+// TODO 目录结构优化
 
 var htmlTemplate = '\
 <!DOCTYPE html>\n\
@@ -17,13 +18,16 @@ var htmlTemplate = '\
   <script>hljs.initHighlightingOnLoad();</script>\n\
 </head>\n\
 <body class="markdown">\n\
-$$content$$\n\
+  <div id="summary">$$summary$$</div>\n\
+  <div id="content">$$content$$</div>\n\
 </body>\n\
 </html>\
 ';
 
-var writeHtmlFile = function (content, fileName, filePath) {
-  var html = htmlTemplate.replace(/\$\$name\$\$/g, fileName).replace(/\$\$content\$\$/g, converter.makeHtml(content));
+var writeHtmlFile = function (content, fileName, filePath, summary) {
+  var html = htmlTemplate.replace(/\$\$name\$\$/g, fileName)
+    .replace(/\$\$content\$\$/g, converter.makeHtml(content))
+    .replace(/\$\$summary\$\$/g, converter.makeHtml(summary));
   writeFile(html, filePath);
 };
 

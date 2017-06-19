@@ -11,7 +11,7 @@ exports.createFiberRoot = function(containerInfo: any): FiberRoot {
   // Cyclic construction. This cheats the type system right now because
   // stateNode is any.
   // ReactFiber.createHostRootFiber
-  const uninitializedFiber = createHostRootFiber();
+  const uninitializedFiber = createHostRootFiber();//fiber.tag = 3
   const root = {
     current: uninitializedFiber,
     containerInfo: containerInfo,
@@ -20,7 +20,7 @@ exports.createFiberRoot = function(containerInfo: any): FiberRoot {
     context: null,
     pendingContext: null,
   };
-  uninitializedFiber.stateNode = root;
+  uninitializedFiber.stateNode = root;//root.current.stateNode == root
   return root;
 };
 ```
